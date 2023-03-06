@@ -42,3 +42,27 @@ then
 fi
 
 
+#Checks if inventory file exists
+
+var5="/var/www/html"
+if [[ ! -f ${var5}/inventory.html ]]
+then
+        echo -e "Log Type\t\tTime Created\t\tType\t\tSize\n" >${var5}/inventory.html
+fi
+
+#Provide logs to inventory file
+
+if [[ -f ${var5}/inventory.html ]]
+then
+        size=$(du -h /tmp/${name}-httpd-logs-${timestamp}.tar | awk '{print $1}')
+        echo -e "httpd-logs\t\t${timestamp}\t\ttar\t\t${size}\n" >>${var5}/inventory.html
+fi
+
+#Execute crone jobs
+
+
+if [[ ! -f /etc/cron.d/automation ]]
+then
+        echo "0 1 * * * root /root/Automation_Project/automation.sh " >>/etc/cron.d/automation
+fi
+
